@@ -1,0 +1,29 @@
+---
+
+os_auth_url: http://your.keystone.com/v3
+os_user_domain_name: openstackdomain
+os_region_name: region
+os_tenant_id: 187263vf78f2fasoiwur184712
+os_tenant_name: openstack_tanant
+
+os_username: openstack_user
+os_password: user_password
+
+os_image_ssh_config_patterns:
+
+  ubuntu:
+    ssh_user: ubuntu
+    ssh_port: 22
+
+  some_image_regex_pattern:
+    ssh_user: image_user
+    ssh_port: 23456
+
+group_patterns:
+
+  jenkins:
+    pattern: CI_JENKINS-
+
+  ci-develop:
+    pattern: CI-DEVEL-
+
