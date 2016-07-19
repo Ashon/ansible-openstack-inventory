@@ -1,6 +1,9 @@
 # Ansible Dynamic Inventory for Openstack
   Simple Ansible Dynamic Inventory for Openstack
 
+## dependencies
+  You need to get openstack cli to use this dynamic inventory.
+
 ## Usage
   configure openstack.yml (config for dynamic inventory)
 
