@@ -40,3 +40,9 @@ group_patterns:
     pattern: CI-DEVEL-
 
 ```
+
+  use dynamic inventory
+
+```
+$ ansible -i openstack.py jenkins -m ping
+```
