@@ -49,3 +49,8 @@ group_patterns:
 ```
 $ ansible -i openstack.py jenkins -m ping
 ```
+
+## Issues
+  - Change `openstack cli` to `novaclient` module.
+  - Support group_vars to dynamic inventory's customized groups.
+
