@@ -15,7 +15,7 @@ os_image_ssh_config_patterns:
     ssh_user: ubuntu
     ssh_port: 22
 
-  some_image_regex_pattern:
+  some_your_openstack_image:
     ssh_user: image_user
     ssh_port: 23456
 
