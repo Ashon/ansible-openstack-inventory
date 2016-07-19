@@ -100,6 +100,7 @@ def get_ssh_user_from_os_image(patterns, os_image_name):
 
 def get_ssh_port_from_os_image(patterns, os_image_name):
 
+    # default ssh port
     ssh_port = 22
 
     for pattern in patterns.keys():

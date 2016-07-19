@@ -31,8 +31,9 @@ os_image_ssh_config_patterns:               # openstack image default ssh config
 group_patterns:
   # ansible group name
   jenkins:
-
     # instance name patterns
+    # dynamic inventory will aggregate instances
+    # which is matched with patterns to 'jenkins' group.
     pattern: CI_JENKINS-
 
   ci-develop:
