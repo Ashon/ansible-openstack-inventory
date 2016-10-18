@@ -1,1 +1,3 @@
 openstack.yml
+.openstack_cached.json
+*.swp
