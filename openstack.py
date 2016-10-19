@@ -191,7 +191,7 @@ def get_inventory(config):
         }
     }
 
-    group_patterns = config.get('group_patterns')
+    group_patterns = config.get('group_patterns', {})
 
     for group in group_patterns.keys():
 
