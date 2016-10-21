@@ -1,11 +1,14 @@
 #!/usr/bin/env python
+
 import argparse
 import json
 import os
 import subprocess
 import sys
 import yaml
+
 from collections import namedtuple
+
 
 # OS = OPENSTACK
 OS_DYNAMIC_INVENTORY_TITLE = 'Openstack Dynamic Inventory'
@@ -95,29 +98,36 @@ def set_env_if_not_exists(env_var_name, default_value):
 
 
 def initialize(config):
+
     valid = True
+
     for key in OS_CLIENT_CONFIG_PARING_DICT.keys():
         try:
             set_env_if_not_exists(
                 env_var_name=key,
                 default_value=config.get(OS_CLIENT_CONFIG_PARING_DICT[key])
             )
+
         except AttributeError:
             print 'There is no value "%s" in environment or "%s" in %s' % (
                 key, OS_CLIENT_CONFIG_PARING_DICT[key],
                 OS_DYNAMIC_INVENTORY_CONFIG_FILENAME)
+
             valid = False
+
     return valid
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description=OS_DYNAMIC_INVENTORY_TITLE)
+
     arg_group = parser.add_mutually_exclusive_group(required=True)
     arg_group.add_argument('--list', action='store_true')
     arg_group.add_argument('--save', action='store_true')
     arg_group.add_argument('--clean', action='store_true')
     arg_group.add_argument('--host')
+
     return parser.parse_args()
 
 
@@ -136,9 +146,11 @@ def query_network_list():
 
 
 def query_server_info(instance_id_or_name):
+
     column_arg = ' '.join([
         '-c ' + column for column in OS_REQUIRED_RESOURCES
     ])
+
     return json.loads(
         get_stdout_from_cmd(OS_CLIENT_CMD_SERVER_INFO_JSON.format(
             instance_id_or_name=instance_id_or_name,
@@ -146,7 +158,9 @@ def query_server_info(instance_id_or_name):
 
 
 def get_detail_server_list(os_serverlist):
+
     # slow...
+
     return [
         query_server_info(instance[OS_RESOURCE_KEY_INSTANCE_ID])
         for instance in os_serverlist
@@ -154,6 +168,7 @@ def get_detail_server_list(os_serverlist):
 
 
 def get_ip_from_instance(os_instance):
+
     split_table = os_instance[OS_RESOURCE_KEY_IP_ADDRESSES].split('=')
 
     # network_name = split_table[0]
@@ -167,6 +182,7 @@ def get_ssh_user_from_instance(patterns, os_instance):
     ssh_user = OS_DEFAULT_SSH_USER
 
     for pattern in patterns.keys():
+
         if os_instance[OS_RESOURCE_KEY_IMAGE].find(pattern) > -1:
             ssh_user = patterns[pattern].get(OS_RESOURCE_KEY_SSH_USER)
             break
@@ -179,6 +195,7 @@ def get_ssh_port_from_instance(patterns, os_instance):
     ssh_port = OS_DEFAULT_SSH_PORT
 
     for pattern in patterns.keys():
+
         if os_instance[OS_RESOURCE_KEY_IMAGE].find(pattern) > -1:
             ssh_port = patterns[pattern].get(OS_RESOURCE_KEY_SSH_PORT)
             break
@@ -192,6 +209,7 @@ def get_ssh_key_path_from_instance(key_directory, os_instance):
 
 
 def get_instance_from_instance_list(instance_name, os_instance_list):
+
     return [
         os_instance for os_instance in os_instance_list
         if os_instance[OS_RESOURCE_KEY_INSTANCE_NAME] == instance_name
@@ -199,6 +217,7 @@ def get_instance_from_instance_list(instance_name, os_instance_list):
 
 
 def get_inventory(config):
+
     image_name_patterns = config.get(CONFIG_SSH_CONFIG_BY_IMAGE_PATTERNS, {})
     ssh_key_directory = config.get(CONFIG_ANSIBLE_KEY_DIRECTORY, '.')
 
@@ -222,12 +241,15 @@ def get_inventory(config):
 
         inventory_hostvars[instance_name] = AnsibleInventoryHost(
             ansible_ssh_host=ssh_host,
+
             ansible_ssh_port=get_ssh_port_from_instance(
                 patterns=image_name_patterns,
                 os_instance=matched_instance),
+
             ansible_ssh_user=get_ssh_user_from_instance(
                 patterns=image_name_patterns,
                 os_instance=matched_instance),
+
             ansible_ssh_private_key_file=get_ssh_key_path_from_instance(
                 key_directory=ssh_key_directory,
                 os_instance=matched_instance)
@@ -237,13 +259,9 @@ def get_inventory(config):
             inventory_hostvars[instance_name]['iface_%s' % str(i)] = ifaces[i]
 
     ansible_inventory = {
-        # set 'openstack' as
-
-        default openstack instance group
+        # set 'openstack' as default openstack instance group
         # in dynamic inventory
-        OS_DYNAMIC_INVENTORY_
-
-        DEFAULT_GROUP_NAME: {
+        OS_DYNAMIC_INVENTORY_DEFAULT_GROUP_NAME: {
             ANSIBLE_INVENTORY_KEY_HOSTS: instance_name_list,
         },
         ANSIBLE_INVENTORY_KEY_META: {
@@ -254,18 +272,23 @@ def get_inventory(config):
     groups = config.get(CONFIG_GROUPS, {})
 
     for group in groups.keys():
+
         inventory_group = {}
+
         instance_name_pattern = groups[group].get(CONFIG_GROUPS_PATTERN)
         children = groups[group].get(CONFIG_GROUPS_CHILDREN)
+
         # register openstack instances as group hosts
         if instance_name_pattern:
             inventory_group[ANSIBLE_INVENTORY_KEY_HOSTS] = [
                 instance_name for instance_name in instance_name_list
                 if instance_name.find(instance_name_pattern) > -1
             ]
+
         # register child groups
         if children:
             inventory_group[ANSIBLE_INVENTORY_KEY_CHILDREN] = children
+
         ansible_inventory[group] = inventory_group
 
     return ansible_inventory
@@ -332,6 +355,7 @@ def main():
             print e
 
     return 0
+
 
 if __name__ == '__main__':
     main()
