@@ -14,6 +14,7 @@ $ sudo pip install python-openstackclient
   configure openstack.yml (config for dynamic inventory)
 
 ``` yml
+
 # file: openstack.yml
 ---
 os_auth_url: http://your.keystone.com/v3    # openstack keystone api url
@@ -37,9 +38,11 @@ os_image_ssh_config_patterns:               # openstack image default ssh config
     ssh_port: 23456
 
 # customized openstack group
-group_patterns:
+groups:
+
   # ansible group name
   jenkins:
+
     # instance name patterns
     # dynamic inventory will aggregate instances
     # which is matched with patterns to 'jenkins' group.
@@ -59,4 +62,3 @@ $ ansible -i openstack.py jenkins -m ping
 ## Issues
   - Change `openstack cli` to `novaclient` module.
   - Support group_vars to dynamic inventory's customized groups.
-
