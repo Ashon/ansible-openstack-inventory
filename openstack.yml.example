@@ -19,7 +19,7 @@ os_image_ssh_config_patterns:
     ssh_user: image_user
     ssh_port: 23456
 
-group_patterns:
+groups:
 
   jenkins:
     pattern: CI_JENKINS-
